@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "5d166b0f-0590-4db9-b95b-00b741dc6780",
+		"name": "Reqres API + UI Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47122934",
+		"_collection_link": "https://coso17-3637593.postman.co/workspace/Project1~03283403-1d02-44d4-9830-9b5b6ec9d12a/collection/47122934-5d166b0f-0590-4db9-b95b-00b741dc6780?action=share&source=collection_link&creator=47122934"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"  pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"User has name and job\", function () {\r",
+							"  const body = pm.response.json();\r",
+							"  pm.expect(body.name).to.eql(\"Andrei\");\r",
+							"  pm.expect(body.job).to.eql(\"QA Tester\");\r",
+							"});\r",
+							"pm.test(\"Simulez afișare user în UI\", function () {\r",
+							"  const body = pm.response.json();\r",
+							"  const simulatedUI = `User ${body.name} has job ${body.job}`;\r",
+							"  console.log(simulatedUI);\r",
+							"  pm.expect(simulatedUI).to.include(\"User Andrei\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Andrei\",\r\n  \"job\": \"QA Tester\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://reqres.in/api/users",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json();\r",
+							"pm.environment.set(\"auth_token\", res.token); // salvează token în environment\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"eve.holt@reqres.in\",\r\n  \"password\": \"cityslicka\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://reqres.in/api/login",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Simulated UI Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Obține valorile salvate de la requestul POST anterior\r",
+							"const name = pm.environment.get(\"created_name\");\r",
+							"const job = pm.environment.get(\"created_job\");\r",
+							"\r",
+							"// Simulează afișarea într-un UI (doar logic, în consolă)\r",
+							"const simulatedUI = `👤 ${name} lucrează ca ${job}`;\r",
+							"console.log(simulatedUI);\r",
+							"\r",
+							"// Teste logice\r",
+							"pm.test(\"UI shows name\", () => {\r",
+							"  pm.expect(name).to.exist;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"UI shows job\", () => {\r",
+							"  pm.expect(job).to.exist;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://reqres.in/api/users/2\n?x-api-key=reqres-free-v1&Content-Type=application/json",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users",
+						"2\n"
+					],
+					"query": [
+						{
+							"key": "x-api-key",
+							"value": "reqres-free-v1"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
